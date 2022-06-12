@@ -1,7 +1,6 @@
 MIT License
 
-Copyright (c) [2022]
-Code of Julien Salleyron, Senior Developer at Containous, during a talk at FOSDEM 2019. 
+Copyright (c) 2022 David Aparicio
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,5 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-https://choosealicense.com/licenses/mit/
