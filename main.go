@@ -100,7 +100,7 @@ func main() {
 	errServ := http.ListenAndServeTLS(CONN_HOST+":"+CONN_PORT, CERT_CRT, CERT_KEY, proxy)
 	if errServ != nil {
 		// Error starting or closing listener:
-		log.Fatalf("HTTP server ListenAndServe: %v", err.Error())
+		log.Fatalf("HTTP server ListenAndServe: %v", errServ.Error())
 	}
 	// Example with context https://pkg.go.dev/net/http#Server.Shutdown
 }
