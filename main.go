@@ -26,6 +26,11 @@ const (
 func init() {
 	// https://youtu.be/tWSmUsYLiE4
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	err := http2.ConfigureTransport(http.DefaultTransport.(*http.Transport))
+	if err != nil {
+		log.Fatalf("http2.ConfigureTransport error=%s", err)
+		return
+	}
 }
 
 func main() {
@@ -42,12 +47,6 @@ func main() {
 		req.RequestURI = ""
 		s, _, _ := net.SplitHostPort(req.RemoteAddr) //8m
 		req.Header.Add("X-Forward-For", s)
-
-		err := http2.ConfigureTransport(http.DefaultTransport.(*http.Transport))
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
 
 		resp, err := http.DefaultClient.Do(req)
 		if err != nil {
@@ -105,7 +104,16 @@ func main() {
 	//http.ListenAndServe(":8080", proxy)
 	// HTTP 2
 	log.Println("Proxy starting to listen on " + CONN_HOST + ":" + CONN_PORT + ", ready to forward the demoURL " + PROXY_URL)
-	errServ := http.ListenAndServeTLS(CONN_HOST+":"+CONN_PORT, CERT_CRT, CERT_KEY, proxy)
+
+	srv := &http.Server{
+		Addr:              CONN_HOST + ":" + CONN_PORT,
+		ReadTimeout:       1 * time.Second,
+		WriteTimeout:      1 * time.Second,
+		IdleTimeout:       30 * time.Second,
+		ReadHeaderTimeout: 2 * time.Second,
+		Handler:           proxy,
+	}
+	errServ := srv.ListenAndServeTLS(CERT_CRT, CERT_KEY)
 	if errServ != nil {
 		// Error starting or closing listener:
 		log.Fatalf("HTTP server ListenAndServe: %v", errServ.Error())
