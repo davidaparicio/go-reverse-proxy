@@ -25,7 +25,7 @@ const (
 
 func init() {
 	// https://youtu.be/tWSmUsYLiE4
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true} // #nosec G402
 	err := http2.ConfigureTransport(http.DefaultTransport.(*http.Transport))
 	if err != nil {
 		log.Fatalf("http2.ConfigureTransport error=%s", err)
