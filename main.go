@@ -54,7 +54,7 @@ func main() {
 		// To maintain the correct Content-Type/Length etc..
 		for key, values := range resp.Header {
 			for _, value := range values {
-				rw.Header().Set(key, value)
+				rw.Header().Add(key, value)
 			}
 		}
 
@@ -80,14 +80,14 @@ func main() {
 			trailerKeys = append(trailerKeys, key)
 		}
 
-		rw.Header().Set("Trailer", strings.Join(trailerKeys, ","))
+		rw.Header().Add("Trailer", strings.Join(trailerKeys, ","))
 
 		rw.WriteHeader(resp.StatusCode)
 		io.Copy(rw, resp.Body)
 
 		for key, values := range resp.Trailer {
 			for _, value := range values {
-				rw.Header().Set(key, value)
+				rw.Header().Add(key, value)
 			}
 		}
 		ticker.Stop()
