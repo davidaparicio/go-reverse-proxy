@@ -43,7 +43,11 @@ func main() {
 		s, _, _ := net.SplitHostPort(req.RemoteAddr) //8m
 		req.Header.Add("X-Forward-For", s)
 
-		http2.ConfigureTransport(http.DefaultTransport.(*http.Transport))
+		err := http2.ConfigureTransport(http.DefaultTransport.(*http.Transport))
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
 
 		resp, err := http.DefaultClient.Do(req)
 		if err != nil {
@@ -54,7 +58,7 @@ func main() {
 		// To maintain the correct Content-Type/Length etc..
 		for key, values := range resp.Header {
 			for _, value := range values {
-				rw.Header().Add(key, value)
+				rw.Header().Set(key, value)
 			}
 		}
 
@@ -83,7 +87,11 @@ func main() {
 		rw.Header().Add("Trailer", strings.Join(trailerKeys, ","))
 
 		rw.WriteHeader(resp.StatusCode)
-		io.Copy(rw, resp.Body)
+		_, err = io.Copy(rw, resp.Body)
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
 
 		for key, values := range resp.Trailer {
 			for _, value := range values {
